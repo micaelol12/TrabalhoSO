@@ -22,21 +22,31 @@ frame_tabela.pack(fill='both', expand=True)
 # Scrollbar vertical
 scrollbar = ttk.Scrollbar(frame_tabela, orient='vertical')
 
-
 class Coluna(Enum):
     PID = 'PID'
     NOME = 'Nome'
     CPU = 'CPU %'
+    MEMORIA = 'Memória %'
+    DISCO = 'Disco %'
+    REDE = 'Rede %'
     
 # Treeview
 tree = ttk.Treeview(frame_tabela, columns=[col.value for col in Coluna], show='headings', yscrollcommand=scrollbar.set)
+
 tree.heading(Coluna.PID.value, text=Coluna.PID.value, command=lambda: ordenar_coluna(tree, Coluna.PID.value, False))
 tree.heading(Coluna.NOME.value, text=Coluna.NOME.value, command=lambda: ordenar_coluna(tree, Coluna.NOME.value, False))
 tree.heading(Coluna.CPU.value, text=Coluna.CPU.value, command=lambda: ordenar_coluna(tree, Coluna.CPU.value, False))
 
+tree.heading(Coluna.MEMORIA.value, text=Coluna.MEMORIA.value, command=lambda: ordenar_coluna(tree, Coluna.MEMORIA.value, False))
+tree.heading(Coluna.DISCO.value, text=Coluna.DISCO.value, command=lambda: ordenar_coluna(tree, Coluna.DISCO.value, False))
+tree.heading(Coluna.REDE.value, text=Coluna.REDE.value, command=lambda: ordenar_coluna(tree, Coluna.REDE.value, False))
+
 tree.column(Coluna.PID.value, width=80)
 tree.column(Coluna.NOME.value, width=250)
 tree.column(Coluna.CPU.value, width=100)
+tree.column(Coluna.MEMORIA.value, width=100)
+tree.column(Coluna.DISCO.value, width=100)
+tree.column(Coluna.REDE.value, width=100)
 
 scrollbar.config(command=tree.yview)
 tree.pack(side='left', fill='both', expand=True)
@@ -73,12 +83,13 @@ def atualizar_processos():
     for row in tree.get_children():
         tree.delete(row)
 
-    for proc in psutil.process_iter(['pid', 'name', 'cpu_percent']):
+    for proc in psutil.process_iter(['pid', 'name', 'cpu_percent','memory_percent']):
         try:
             pid = proc.info['pid']
             nome = proc.info['name']
             cpu = proc.info['cpu_percent']
-            tree.insert('', 'end', values=(pid, nome, cpu))
+            memoria = proc.info['memory_percent'],
+            tree.insert('', 'end', values=(pid, nome, cpu,memoria))
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             continue
 
@@ -140,12 +151,24 @@ def mostrar_grafico_cpu():
     plt.show()
 
 
+def exibir_detalhes_processo_selecionado():
+    if pid_selecionado:
+        processo = psutil.Process(pid_selecionado)
+        
+        detalhes = f"Nome: {processo.name()}\n"
+        detalhes += f"CPU: {processo.cpu_percent()}%\n"
+        detalhes += f"Memória: {processo.memory_info().rss / (1024 * 1024)} MB\n"
+        detalhes += f"Tempo de execução: {processo.create_time()}"
+        
+        messagebox.showinfo("Detalhes do Processo", detalhes)
+
 # Botões
 frame_botoes = tk.Frame(root)
 frame_botoes.pack(pady=10)
 
 tk.Button(frame_botoes, text="Encerrar processo selecionado", command=encerrar_processo).pack(side='left', padx=5)
 tk.Button(frame_botoes, text="Mostrar gráfico CPU", command=mostrar_grafico_cpu).pack(side='left', padx=5)
+tk.Button(frame_botoes, text="Mostrar detalhes", command=exibir_detalhes_processo_selecionado).pack(side='left', padx=5)
 
 # Inicia atualização automática
 atualizar_processos()
