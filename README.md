@@ -2,7 +2,7 @@
 Trabalho da disciplina de Sistemas Operacionais
 
 
-# Ideia para Agregar Valor:
+# Ideias para Agregar Valor:
 
 ## 🧠 1. Filtros Inteligentes
 ✅ Por nome do processo (ex: digitar "chrome" e ver só os processos do Chrome).
