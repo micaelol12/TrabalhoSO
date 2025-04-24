@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from Enums import Coluna
 from Controlador import Controlador
+from Column import Column
 
 # Variáveis
 APP_NAME = "Gerenciador de Processos"
@@ -20,24 +21,20 @@ frame_tabela.pack(fill='both', expand=True)
 # Scrollbar vertical
 scrollbar = ttk.Scrollbar(frame_tabela, orient='vertical')
 
+colunas = [
+    Column(Coluna.PID.value,"PID",80,'pid'),
+    Column(Coluna.NOME.value,"Nome",250,'name'),
+    Column(Coluna.CPU.value,"CPU %", 100, 'cpu_percent'),
+    Column(Coluna.MEMORIA.value,"Memória (MB)",100,'memory_percent')]
+
 # Treeview
 tree = ttk.Treeview(frame_tabela, columns=[col.value for col in Coluna], show='headings', yscrollcommand=scrollbar.set)
 
-controlador = Controlador(UPDATE_TIME,Coluna.PID.value,tree,root)
+controlador = Controlador(UPDATE_TIME,tree,root,colunas)
 
-tree.heading(Coluna.PID.value, text="PID", command=lambda: controlador.ordenar_coluna(Coluna.PID.value))
-tree.heading(Coluna.NOME.value, text="Nome", command=lambda: controlador.ordenar_coluna(Coluna.NOME.value))
-tree.heading(Coluna.CPU.value, text="CPU%", command=lambda: controlador.ordenar_coluna(Coluna.CPU.value))
-tree.heading(Coluna.MEMORIA.value, text="Memória (MB)", command=lambda: controlador.ordenar_coluna(Coluna.MEMORIA.value))
-tree.heading(Coluna.DISCO.value, text="Disco", command=lambda: controlador.ordenar_coluna(Coluna.DISCO.value))
-tree.heading(Coluna.REDE.value, text="Rede", command=lambda: controlador.ordenar_coluna(Coluna.REDE.value))
-
-tree.column(Coluna.PID.value, width=80)
-tree.column(Coluna.NOME.value, width=250)
-tree.column(Coluna.CPU.value, width=100)
-tree.column(Coluna.MEMORIA.value, width=100)
-tree.column(Coluna.DISCO.value, width=100)
-tree.column(Coluna.REDE.value, width=100)
+for coluna in colunas:
+    tree.heading(coluna.Id, text=coluna.Name, command=lambda: controlador.ordenar_coluna(coluna.Id))
+    tree.column(coluna.Id, width=coluna.Width)
 
 scrollbar.config(command=tree.yview)
 tree.pack(side='left', fill='both', expand=True)

@@ -11,12 +11,14 @@ class Controlador:
     pid_selecionado = None
     tree = None
     root = None
+    colunas = None
 
-    def __init__(self,tempo_atualizacao,coluna_ordenada,tree,root):
+    def __init__(self,tempo_atualizacao,tree,root,colunas):
         self.tempo_atualizacao = tempo_atualizacao
-        self.coluna_ordenada = coluna_ordenada
+        self.coluna_ordenada = colunas[0].Id
         self.tree = tree
         self.root = root
+        self.colunas = colunas
 
     def ordenar_coluna(self, col,change_order = False):
         dados = [(self.tree.set(k, col), k) for k in self.tree.get_children('')]
