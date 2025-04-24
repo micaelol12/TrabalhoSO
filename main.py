@@ -3,10 +3,15 @@ from tkinter import ttk
 from Enums import Coluna
 from Controlador import Controlador
 
+# Variáveis
+APP_NAME = "Gerenciador de Processos"
+WINDOW_SIZE = "700x400"
+UPDATE_TIME = 3000
+
 # Criação da janela principal
 root = tk.Tk()
-root.title("Gerenciador de Processos")
-root.geometry("700x400")
+root.title(APP_NAME)
+root.geometry(WINDOW_SIZE)
 
 # Frame para tabela + scrollbar
 frame_tabela = tk.Frame(root)
@@ -18,14 +23,14 @@ scrollbar = ttk.Scrollbar(frame_tabela, orient='vertical')
 # Treeview
 tree = ttk.Treeview(frame_tabela, columns=[col.value for col in Coluna], show='headings', yscrollcommand=scrollbar.set)
 
-controlador = Controlador(3000,Coluna.PID.value,tree,root)
+controlador = Controlador(UPDATE_TIME,Coluna.PID.value,tree,root)
 
-tree.heading(Coluna.PID.value, text=Coluna.PID.value, command=lambda: controlador.ordenar_coluna(Coluna.PID.value))
-tree.heading(Coluna.NOME.value, text=Coluna.NOME.value, command=lambda: controlador.ordenar_coluna(Coluna.NOME.value))
-tree.heading(Coluna.CPU.value, text=Coluna.CPU.value, command=lambda: controlador.ordenar_coluna(Coluna.CPU.value))
-tree.heading(Coluna.MEMORIA.value, text=Coluna.MEMORIA.value, command=lambda: controlador.ordenar_coluna(Coluna.MEMORIA.value))
-tree.heading(Coluna.DISCO.value, text=Coluna.DISCO.value, command=lambda: controlador.ordenar_coluna(Coluna.DISCO.value))
-tree.heading(Coluna.REDE.value, text=Coluna.REDE.value, command=lambda: controlador.ordenar_coluna(Coluna.REDE.value))
+tree.heading(Coluna.PID.value, text="PID", command=lambda: controlador.ordenar_coluna(Coluna.PID.value))
+tree.heading(Coluna.NOME.value, text="Nome", command=lambda: controlador.ordenar_coluna(Coluna.NOME.value))
+tree.heading(Coluna.CPU.value, text="CPU%", command=lambda: controlador.ordenar_coluna(Coluna.CPU.value))
+tree.heading(Coluna.MEMORIA.value, text="Memória (MB)", command=lambda: controlador.ordenar_coluna(Coluna.MEMORIA.value))
+tree.heading(Coluna.DISCO.value, text="Disco", command=lambda: controlador.ordenar_coluna(Coluna.DISCO.value))
+tree.heading(Coluna.REDE.value, text="Rede", command=lambda: controlador.ordenar_coluna(Coluna.REDE.value))
 
 tree.column(Coluna.PID.value, width=80)
 tree.column(Coluna.NOME.value, width=250)
