@@ -29,7 +29,6 @@ colunas = [
 
 # Treeview
 tree = ttk.Treeview(frame_tabela, columns=[col.value for col in Coluna], show='headings', yscrollcommand=scrollbar.set)
-
 controlador = Controlador(UPDATE_TIME,tree,root,colunas)
 
 for coluna in colunas:

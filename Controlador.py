@@ -49,18 +49,17 @@ class Controlador:
         for row in self.tree.get_children():
             self.tree.delete(row)
 
-        for proc in psutil.process_iter(['pid', 'name', 'cpu_percent','memory_percent']):
+        for proc in psutil.process_iter([col.ProcessAtribute for col in self.colunas]):
             try:
-                pid = proc.info['pid']
-                nome = proc.info['name']
-                cpu = proc.info['cpu_percent']
-                memoria = proc.info['memory_percent'],
-                self.tree.insert('', 'end', values=(pid, nome, cpu,memoria))
+                values = []
+                for col in self.colunas:
+                    value = proc.info.get(col.ProcessAtribute, '')  # Usa o atributo dinamicamente
+                    values.append(value)
+                self.tree.insert('', 'end', values=values)
             except (psutil.NoSuchProcess, psutil.AccessDenied):
                 continue
 
         # Reaplica ordenação
-        print(self.coluna_ordenada)
         self.ordenar_coluna(self.coluna_ordenada,self.ordem_reversa)
         
         # Restaura seleção
