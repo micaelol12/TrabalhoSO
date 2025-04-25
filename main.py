@@ -25,15 +25,18 @@ colunas = [
     Column(Coluna.PID.value,"PID",80,'pid'),
     Column(Coluna.NOME.value,"Nome",250,'name'),
     Column(Coluna.CPU.value,"CPU %", 100, 'cpu_percent'),
-    Column(Coluna.MEMORIA.value,"Memória (MB)",100,'memory_percent')]
+    Column(Coluna.MEMORIA.value,"Memória (MB)",100,'memory_percent'),
+    Column(Coluna.STATUS.value,"Status",100,'status'),
+    Column(Coluna.USER.value,"Usuário",100,'username')]
 
 # Treeview
 tree = ttk.Treeview(frame_tabela, columns=[col.value for col in Coluna], show='headings', yscrollcommand=scrollbar.set)
 controlador = Controlador(UPDATE_TIME,tree,root,colunas)
 
 for coluna in colunas:
-    tree.heading(coluna.Id, text=coluna.Name, command=lambda: controlador.ordenar_coluna(coluna.Id))
-    tree.column(coluna.Id, width=coluna.Width)
+    print(coluna.Id)
+    tree.heading(coluna.Id, text=coluna.Name, command=lambda c = coluna.Id: controlador.ordenar_coluna(c))
+    tree.column(coluna.Id, width=coluna.Width,stretch=True)
 
 scrollbar.config(command=tree.yview)
 tree.pack(side='left', fill='both', expand=True)

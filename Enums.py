@@ -5,6 +5,6 @@ class Coluna(Enum):
     NOME = 2
     CPU = 3
     MEMORIA = 4
-    DISCO = 5
-    REDE = 6
+    STATUS = 5
+    USER = 6
     

@@ -13,16 +13,18 @@ class Controlador:
     root = None
     colunas = None
 
-    def __init__(self,tempo_atualizacao,tree,root,colunas):
+    def __init__(self,tempo_atualizacao,tree,root,colunas: list[Coluna]):
         self.tempo_atualizacao = tempo_atualizacao
         self.coluna_ordenada = colunas[0].Id
         self.tree = tree
         self.root = root
         self.colunas = colunas
 
-    def ordenar_coluna(self, col,change_order = False):
+    def ordenar_coluna(self, col: int,change_order = False):
         dados = [(self.tree.set(k, col), k) for k in self.tree.get_children('')]
 
+        print(col)
+        
         try:
             dados.sort(key=lambda t: float(t[0]), reverse=change_order)
         except ValueError:
@@ -49,11 +51,18 @@ class Controlador:
         for row in self.tree.get_children():
             self.tree.delete(row)
 
+        cpuCount = psutil.cpu_count()
+        
         for proc in psutil.process_iter([col.ProcessAtribute for col in self.colunas]):
             try:
                 values = []
                 for col in self.colunas:
+                    
                     value = proc.info.get(col.ProcessAtribute, '')  # Usa o atributo dinamicamente
+                    
+                    if col.Id == Coluna.CPU.value:
+                        value = value / cpuCount
+                    
                     values.append(value)
                 self.tree.insert('', 'end', values=values)
             except (psutil.NoSuchProcess, psutil.AccessDenied):
