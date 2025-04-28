@@ -34,7 +34,6 @@ tree = ttk.Treeview(frame_tabela, columns=[col.value for col in Coluna], show='h
 controlador = Controlador(UPDATE_TIME,tree,root,colunas)
 
 for coluna in colunas:
-    print(coluna.Id)
     tree.heading(coluna.Id, text=coluna.Name, command=lambda c = coluna.Id: controlador.ordenar_coluna(c))
     tree.column(coluna.Id, width=coluna.Width,stretch=True)
 

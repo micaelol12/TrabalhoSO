@@ -1,5 +1,7 @@
 # TrabalhoSO
-Trabalho da disciplina de Sistemas Operacionais
+Trabalho da disciplina de Sistemas Operacionais 2025/1
+
+Aluno: Micael Luan Conti
 
 
 # Ideias para Agregar Valor:
@@ -69,3 +71,18 @@ Adicionar logotipo da universidade/matéria no canto.
 
 ## 💬 10. Personalização do Intervalo de Atualização
 Um Spinbox para o usuário escolher o intervalo de atualização (ex: 1s, 3s, 5s, 10s...).
+
+
+# Como Executar
+
+## Instalar libs necessárias
+
+```
+pip install psutil,matplotlib 
+```
+
+## Executar
+
+```
+python .\main.py
+```
