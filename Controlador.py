@@ -13,18 +13,15 @@ class Controlador:
     root = None
     colunas = None
 
-    def __init__(self,tempo_atualizacao,tree,root,colunas: list[Coluna]):
+    def __init__(self,tempo_atualizacao,root,colunas: list[Coluna]):
         self.tempo_atualizacao = tempo_atualizacao
         self.coluna_ordenada = colunas[0].Id
-        self.tree = tree
         self.root = root
         self.colunas = colunas
 
     def ordenar_coluna(self, col: int,change_order = False):
         dados = [(self.tree.set(k, col), k) for k in self.tree.get_children('')]
 
-        print(col)
-        
         try:
             dados.sort(key=lambda t: float(t[0]), reverse=change_order)
         except ValueError:
@@ -136,3 +133,6 @@ class Controlador:
             detalhes += f"Tempo de execução: {processo.create_time()}"
             
             messagebox.showinfo("Detalhes do Processo", detalhes)
+
+    def pesquisar(self,valor):
+            print(f"Texto atual: {valor}")
