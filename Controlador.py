@@ -12,6 +12,9 @@ class Controlador:
     tree = None
     root = None
     colunas = None
+    data = []
+    filteredData = []
+    pesquisa = ""
 
     def __init__(self,tempo_atualizacao,root,colunas: list[Coluna]):
         self.tempo_atualizacao = tempo_atualizacao
@@ -36,23 +39,19 @@ class Controlador:
 
         self.tree.heading(col, command=lambda: self.ordenar_coluna(col, not change_order))
 
+    def preencheTabela(self):
+        for item in self.filteredData:
+            self.tree.insert('', 'end', values=item)
 
-    def atualizar_processos(self):
-        # Salva seleção
-        selecionado = self.tree.selection()
-        
-        if selecionado:
-            self.pid_selecionado = self.tree.item(selecionado[0])['values'][list(Coluna).index(Coluna.PID)]
-
-        # Limpa e recarrega a lista
-        for row in self.tree.get_children():
-            self.tree.delete(row)
-
+    def getProcessos(self):
         cpuCount = psutil.cpu_count()
-        
-        for proc in psutil.process_iter([col.ProcessAtribute for col in self.colunas]):
+        processos = psutil.process_iter([col.ProcessAtribute for col in self.colunas])
+        self.data = []
+
+        for proc in processos:
             try:
                 values = []
+                
                 for col in self.colunas:
                     
                     value = proc.info.get(col.ProcessAtribute, '')  # Usa o atributo dinamicamente
@@ -61,9 +60,29 @@ class Controlador:
                         value = value / cpuCount
                     
                     values.append(value)
-                self.tree.insert('', 'end', values=values)
+                
+                self.data.append(values)
             except (psutil.NoSuchProcess, psutil.AccessDenied):
                 continue
+
+        self.filtra_dados()
+
+    def filtra_dados(self):
+        if self.pesquisa == "":
+            self.filteredData = self.data
+        else:
+            self.filteredData = [proc for proc in self.data if self.pesquisa in proc[list(Coluna).index(Coluna.NOME)]] 
+        
+
+    def atualizar_processos(self):
+
+        self.salvaSelecao()
+        
+        self.limpaTabela()
+
+        self.getProcessos()
+        
+        self.preencheTabela()
 
         # Reaplica ordenação
         self.ordenar_coluna(self.coluna_ordenada,self.ordem_reversa)
@@ -73,6 +92,16 @@ class Controlador:
         
         # Reagenda atualização
         self.root.after(self.tempo_atualizacao, self.atualizar_processos)
+
+    def salvaSelecao(self):
+        selecionado = self.tree.selection()
+        
+        if selecionado:
+            self.pid_selecionado = self.tree.item(selecionado[0])['values'][list(Coluna).index(Coluna.PID)]
+
+    def limpaTabela(self):
+         for row in self.tree.get_children():
+            self.tree.delete(row)
 
     def focaItemSelecionado(self):
         if self.pid_selecionado:
@@ -86,8 +115,8 @@ class Controlador:
         if not messagebox.askokcancel("Avsio",f"Tem certeza que deseja excluir o processo?"):
             return
         
-        
         item = self.tree.selection()
+        
         if item:
             pid = int(self.tree.item(item[0])['values'][list(Coluna).index(Coluna.PID)])
             try:
@@ -135,4 +164,4 @@ class Controlador:
             messagebox.showinfo("Detalhes do Processo", detalhes)
 
     def pesquisar(self,valor):
-            print(f"Texto atual: {valor}")
+            self.pesquisa = valor
