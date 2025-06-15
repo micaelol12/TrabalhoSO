@@ -4,6 +4,7 @@ from Enums import Coluna
 from Controlador import Controlador
 from Column import Column
 from Pesquisa import Pesquisa
+from Prioridade import Prioridade
 
 # Variáveis
 APP_NAME = "Gerenciador de Processos"
@@ -35,6 +36,9 @@ entrada = Pesquisa(
     width=30
 ).pack()
 
+#Prioridade modal
+prioridade = Prioridade(root,controlador)
+
 # Frame para tabela + scrollbar
 frame_tabela = tk.Frame(root)
 frame_tabela.pack(fill='both', expand=True)
@@ -61,6 +65,7 @@ frame_botoes.pack(pady=10)
 
 tk.Button(frame_botoes, text="Encerrar processo selecionado", command=controlador.encerrar_processo).pack(side='left', padx=5)
 tk.Button(frame_botoes, text="Mostrar detalhes", command=controlador.exibir_detalhes_processo_selecionado).pack(side='left', padx=5)
+tk.Button(frame_botoes, text="Mudar Prioridade", command=prioridade.mudar_prioridade_dialog).pack(side='left', padx=5)
 
 # Inicia atualização automática
 controlador.atualizar_processos()

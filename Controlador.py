@@ -152,3 +152,14 @@ class Controlador:
         self.limpaTabela()
         self.preencheTabela()
         self.ordenar_coluna(self.coluna_ordenada, self.ordem_reversa)
+    
+    def get_prioridade(self) -> int:
+        p = psutil.Process(self.pid_selecionado)
+        return p.nice()
+    
+    def mudar_prioridade(self,nivel):
+        p = psutil.Process(self.pid_selecionado)
+        p.nice(nivel)
+        
+
+
