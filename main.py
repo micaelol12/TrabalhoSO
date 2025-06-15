@@ -12,10 +12,11 @@ UPDATE_TIME = 3000
 colunas = [
     Column(Coluna.PID.value,"PID",80,'pid'),
     Column(Coluna.NOME.value,"Nome",250,'name'),
-    Column(Coluna.CPU.value,"CPU %", 100, 'cpu_percent'),
-    Column(Coluna.MEMORIA.value,"Memória (MB)",100,'memory_percent'),
-    Column(Coluna.STATUS.value,"Status",100,'status'),
-    Column(Coluna.USER.value,"Usuário",100,'username')]
+    Column(Coluna.CPU.value,"CPU %", 50, 'cpu_percent'),
+    Column(Coluna.MEMORIA.value,"Memória",80,'memory_info'),
+    Column(Coluna.STATUS.value,"Status",80,'status'),
+    Column(Coluna.USER.value,"Usuário",100,'username'),
+    Column(Coluna.CAMINHO.value,"Caminho",100,'exe')]
 
 # Criação da janela principal
 root = tk.Tk()
@@ -28,7 +29,7 @@ frame_pesquisa = tk.Frame(root)
 frame_pesquisa.pack(pady=10)
 entrada = Pesquisa(
     frame_pesquisa,
-    placeholder="Digite seu nome...",
+    placeholder="Pesquise por Nome,Pid ou Status",
     delay=700,  # 700ms depois de parar de digitar
     ao_parar_digitar=controlador.pesquisar,
     width=30
@@ -59,7 +60,6 @@ frame_botoes = tk.Frame(root)
 frame_botoes.pack(pady=10)
 
 tk.Button(frame_botoes, text="Encerrar processo selecionado", command=controlador.encerrar_processo).pack(side='left', padx=5)
-tk.Button(frame_botoes, text="Mostrar gráfico CPU", command=controlador.mostrar_grafico_cpu).pack(side='left', padx=5)
 tk.Button(frame_botoes, text="Mostrar detalhes", command=controlador.exibir_detalhes_processo_selecionado).pack(side='left', padx=5)
 
 # Inicia atualização automática

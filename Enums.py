@@ -7,4 +7,5 @@ class Coluna(Enum):
     MEMORIA = 4
     STATUS = 5
     USER = 6
+    CAMINHO = 7
     

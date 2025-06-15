@@ -55,10 +55,13 @@ class Controlador:
                 for col in self.colunas:
                     
                     value = proc.info.get(col.ProcessAtribute, '')  # Usa o atributo dinamicamente
-                    
                     if col.Id == Coluna.CPU.value:
-                        value = value / cpuCount
-                    
+                            value = round(value / cpuCount, 2)  # CPU ajustado + arredondado
+                    elif col.Id == Coluna.MEMORIA.value:
+                            value = f"{round(value.rss/1024,2)} K" # Memória em Kilobytes 
+                    elif col.Id == Coluna.USER.value:
+                            value = "Sistema" if value == None else value   
+    
                     values.append(value)
                 
                 self.data.append(values)
@@ -71,11 +74,18 @@ class Controlador:
         if self.pesquisa == "":
             self.filteredData = self.data
         else:
-            self.filteredData = [proc for proc in self.data if self.pesquisa in proc[list(Coluna).index(Coluna.NOME)]] 
-        
+            colunas_para_filtrar = [Coluna.NOME, Coluna.PID, Coluna.STATUS]
+            pesquisa_lower = self.pesquisa.lower()
+
+            self.filteredData = [
+                    processo for processo in self.data
+                    if any(
+                        pesquisa_lower in str(processo[list(Coluna).index(col)]).lower()
+                        for col in colunas_para_filtrar
+                    )
+                ]
 
     def atualizar_processos(self):
-
         self.salvaSelecao()
         
         self.limpaTabela()
@@ -84,13 +94,10 @@ class Controlador:
         
         self.preencheTabela()
 
-        # Reaplica ordenação
         self.ordenar_coluna(self.coluna_ordenada,self.ordem_reversa)
         
-        # Restaura seleção
         self.focaItemSelecionado()
         
-        # Reagenda atualização
         self.root.after(self.tempo_atualizacao, self.atualizar_processos)
 
     def salvaSelecao(self):
@@ -128,30 +135,6 @@ class Controlador:
         else:
             messagebox.showwarning("Aviso", "Nenhum processo selecionado.")
 
-    @staticmethod
-    def mostrar_grafico_cpu():
-        processos = []
-        for proc in psutil.process_iter(['name', 'cpu_percent']):
-            try:
-                cpu = proc.info['cpu_percent']
-                if cpu > 0.5:
-                    processos.append((proc.info['name'], cpu))
-            except:
-                continue
-
-        processos.sort(key=lambda x: x[1], reverse=True)
-        nomes = [p[0] for p in processos][:10]
-        valores = [p[1] for p in processos][:10]
-
-        plt.figure(figsize=(10, 5))
-        plt.barh(nomes, valores, color='skyblue')
-        plt.xlabel('Uso de CPU (%)')
-        plt.title('Top 10 processos por uso de CPU')
-        plt.gca().invert_yaxis()
-        plt.tight_layout()
-        plt.show()
-
-
     def exibir_detalhes_processo_selecionado(self):
         if self.pid_selecionado:
             processo = psutil.Process(self.pid_selecionado)
@@ -164,4 +147,8 @@ class Controlador:
             messagebox.showinfo("Detalhes do Processo", detalhes)
 
     def pesquisar(self,valor):
-            self.pesquisa = valor
+        self.pesquisa = valor
+        self.filtra_dados()
+        self.limpaTabela()
+        self.preencheTabela()
+        self.ordenar_coluna(self.coluna_ordenada, self.ordem_reversa)
