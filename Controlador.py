@@ -8,7 +8,7 @@ class Controlador:
     coluna_ordenada = None
     tempo_atualizacao = None
     ordem_reversa = False
-    pid_selecionado = None
+    pid_selecionado:int = None
     tree = None
     root = None
     colunas = None
@@ -104,7 +104,7 @@ class Controlador:
             self.tree.delete(row)
 
     def focaItemSelecionado(self):
-        if self.pid_selecionado:
+        if self.pid_selecionado != None:
             for item in self.tree.get_children():
                 if self.tree.item(item)['values'][list(Coluna).index(Coluna.PID)] == self.pid_selecionado:
                     self.tree.selection_set(item)
