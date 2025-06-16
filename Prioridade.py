@@ -27,15 +27,16 @@ class Prioridade:
     
     def pode_alterar_prioridade(self) -> bool:
         try:
-            processo = psutil.Process(self.controlador.pid_selecionado)
+            processo = self.controlador.processo_selecionado
             atual = processo.nice()  # Tenta ler a prioridade atual
             processo.nice(atual)     # Tenta reatribuir o mesmo valor (só pra testar permissão)
+            pid = self.controlador.processo_selecionado.pid
             return True
         except psutil.AccessDenied:
-            messagebox.showerror("Erro",f"Permissão negada para alterar prioridade do processo {self.controlador.pid_selecionado}.")
+            messagebox.showerror("Erro",f"Permissão negada para alterar prioridade do processo {pid}.")
             return False
         except psutil.NoSuchProcess:
-            messagebox.showerror("Erro",f"O processo {self.controlador.pid_selecionado} não existe mais.")
+            messagebox.showerror("Erro",f"O processo {pid} não existe mais.")
             return False
         except Exception as e:
             messagebox.showerror("Erro",e)
@@ -54,7 +55,7 @@ class Prioridade:
         janela = tk.Toplevel(self.root)
         janela.title("Mudar Prioridade")
 
-        label = tk.Label(janela, text=f"Selecionado PID: {self.controlador.pid_selecionado}\nEscolha a nova prioridade:")
+        label = tk.Label(janela, text=f"Selecionado PID: {self.controlador.processo_selecionado.pid}\nEscolha a nova prioridade:")
         label.pack(pady=10)
 
         var = tk.StringVar(janela)

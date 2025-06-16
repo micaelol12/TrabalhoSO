@@ -8,19 +8,20 @@ class Controlador:
     coluna_ordenada = None
     tempo_atualizacao = None
     ordem_reversa = False
-    pid_selecionado:int = None
     tree = None
     root = None
     colunas = None
     data = []
     filteredData = []
     pesquisa = ""
+    processo_selecionado:psutil.Process
 
     def __init__(self,tempo_atualizacao,root,colunas: list[Coluna]):
         self.tempo_atualizacao = tempo_atualizacao
         self.coluna_ordenada = colunas[0].Id
         self.root = root
         self.colunas = colunas
+        self.processo_selecionado = None
 
     def ordenar_coluna(self, col: int,change_order = False):
         dados = [(self.tree.set(k, col), k) for k in self.tree.get_children('')]
@@ -86,8 +87,6 @@ class Controlador:
                 ]
 
     def atualizar_processos(self):
-        self.salvaSelecao()
-        
         self.limpaTabela()
 
         self.getProcessos()
@@ -100,20 +99,21 @@ class Controlador:
         
         self.root.after(self.tempo_atualizacao, self.atualizar_processos)
 
-    def salvaSelecao(self):
+    def salva_selecao(self):
         selecionado = self.tree.selection()
         
         if selecionado:
-            self.pid_selecionado = self.tree.item(selecionado[0])['values'][list(Coluna).index(Coluna.PID)]
+            pid = self.tree.item(selecionado[0])['values'][list(Coluna).index(Coluna.PID)]
+            self.processo_selecionado = psutil.Process(pid)
 
     def limpaTabela(self):
          for row in self.tree.get_children():
             self.tree.delete(row)
 
     def focaItemSelecionado(self):
-        if self.pid_selecionado != None:
+        if self.processo_selecionado != None:
             for item in self.tree.get_children():
-                if self.tree.item(item)['values'][list(Coluna).index(Coluna.PID)] == self.pid_selecionado:
+                if self.tree.item(item)['values'][list(Coluna).index(Coluna.PID)] == self.processo_selecionado.pid:
                     self.tree.selection_set(item)
                     self.tree.see(item)
                     break
@@ -136,13 +136,12 @@ class Controlador:
             messagebox.showwarning("Aviso", "Nenhum processo selecionado.")
 
     def exibir_detalhes_processo_selecionado(self):
-        if self.pid_selecionado:
-            processo = psutil.Process(self.pid_selecionado)
+        if self.processo_selecionado:
             
-            detalhes = f"Nome: {processo.name()}\n"
-            detalhes += f"CPU: {processo.cpu_percent()}%\n"
-            detalhes += f"Memória: {processo.memory_info().rss / (1024 * 1024)} MB\n"
-            detalhes += f"Tempo de execução: {processo.create_time()}"
+            detalhes = f"Nome: {self.processo_selecionado.name()}\n"
+            detalhes += f"CPU: {self.processo_selecionado.cpu_percent()}%\n"
+            detalhes += f"Memória: {self.processo_selecionado.memory_info().rss / (1024 * 1024)} MB\n"
+            detalhes += f"Tempo de execução: {self.processo_selecionado.create_time()}"
             
             messagebox.showinfo("Detalhes do Processo", detalhes)
 
@@ -154,19 +153,15 @@ class Controlador:
         self.ordenar_coluna(self.coluna_ordenada, self.ordem_reversa)
     
     def get_prioridade(self) -> int:
-        p = psutil.Process(self.pid_selecionado)
-        return p.nice()
+        return self.processo_selecionado.nice()
     
     def mudar_prioridade(self,nivel):
-        p = psutil.Process(self.pid_selecionado)
-        p.nice(nivel)
+        self.processo_selecionado.nice(nivel)
         
     def get_afinidade(self):
-        p = psutil.Process(self.pid_selecionado)
-        return p.cpu_affinity()
+        return self.processo_selecionado.cpu_affinity()
     
     def set_afinidade(self,nova_afinidade):
-        p = psutil.Process(self.pid_selecionado)
-        p.cpu_affinity(nova_afinidade)
+        self.processo_selecionado.cpu_affinity(nova_afinidade)
 
 

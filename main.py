@@ -78,17 +78,19 @@ prioridade_btn.pack(side='left', padx=5)
 afindiade_btn.pack(side='left', padx=5)
 
 
-def atualizar_estado_botoes(event=None):
-    pid_selecionado = controlador.pid_selecionado
-    
-    estado = tk.NORMAL if pid_selecionado is not None else tk.DISABLED
+def tree_select(evento = None):
+    controlador.salva_selecao()
+    atualizar_estado_botoes()
+
+def atualizar_estado_botoes():
+    estado = tk.NORMAL if controlador.processo_selecionado is not None else tk.DISABLED
 
     encerrar_btn.config(state=estado)
     details_btn.config(state=estado)
     prioridade_btn.config(state=estado)
     afindiade_btn.config(state=estado)
     
-tree.bind("<<TreeviewSelect>>", atualizar_estado_botoes)
+tree.bind("<<TreeviewSelect>>", tree_select)
 
 # Inicia atualização automática
 controlador.atualizar_processos()

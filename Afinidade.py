@@ -1,10 +1,8 @@
 from Controlador import Controlador
 import psutil
 import tkinter as tk
-from tkinter import ttk
 from Controlador import Controlador
 from tkinter import  messagebox
-
 
 class Afinidade:
     def __init__(self,root,controlador:Controlador):
@@ -28,7 +26,7 @@ class Afinidade:
             
         
     def mudar_afinidade_dialog(self):
-        pid = self.controlador.pid_selecionado
+        pid = self.controlador.processo_selecionado.pid
         
         try:
             cpus_disponiveis = list(range(psutil.cpu_count()))
