@@ -1,8 +1,11 @@
+from Enums import Coluna
+
+
 class Column:
-    Id = None
-    Name = None
-    Width = None
-    ProcessAtribute = None
+    Id:Coluna = None
+    Name:str = None
+    Width:int = None
+    ProcessAtribute:str = None
     
     def __init__(self,id,name,width,attribute):
         self.Id = id
