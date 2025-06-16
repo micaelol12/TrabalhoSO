@@ -18,13 +18,17 @@ class Controlador:
     pesquisa = ""
     processo_selecionado: psutil.Process
 
-    def __init__(self, tempo_atualizacao: int, root: tk.Tk, colunas: list[Column], tree: ttk.Treeview):
+    def __init__(self, tempo_atualizacao: int, root: tk.Tk, colunas: list[Column], tree: ttk.Treeview, status_bar: tk.Label):
         self.tempo_atualizacao = tempo_atualizacao
         self.coluna_ordenada = colunas[0].Id
         self.root = root
         self.colunas = colunas
         self.tree = tree
         self.processo_selecionado = None
+        self.status_bar = status_bar
+
+    def atualizar_status(self, quantidade: int):
+        self.status_bar.config(text=f"Total de processos: {quantidade}")
 
     def ordenar_coluna(self, col: int, change_order=False):
         dados = [(self.tree.set(k, col), k)
@@ -81,6 +85,7 @@ class Controlador:
 
         self.filtra_dados()
 
+
     def filtra_dados(self):
         if self.pesquisa == "":
             self.filteredData = self.data
@@ -96,6 +101,8 @@ class Controlador:
                     for col in colunas_para_filtrar
                 )
             ]
+            
+        self.atualizar_status(len(self.filteredData))
 
     def atualizar_processos(self):
         self.limpaTabela()

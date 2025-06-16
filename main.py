@@ -6,7 +6,6 @@ from Column import Column
 from Pesquisa import Pesquisa
 from Prioridade import Prioridade
 from Afinidade import Afinidade
-
 # Variáveis
 APP_NAME = "Gerenciador de Processos"
 WINDOW_SIZE = "700x400"
@@ -27,11 +26,12 @@ root.geometry(WINDOW_SIZE)
 frame_pesquisa = tk.Frame(root)
 frame_pesquisa.pack(pady=10)
 frame_tabela = tk.Frame(root)
+status_bar = tk.Label(root, text="Pronto", anchor='w')
 frame_tabela.pack(fill='both', expand=True)
 scrollbar = ttk.Scrollbar(frame_tabela, orient='vertical')
 tree = ttk.Treeview(frame_tabela, columns=[
                     col.value for col in Coluna], show='headings', yscrollcommand=scrollbar.set)
-controlador = Controlador(UPDATE_TIME, root, colunas, tree)
+controlador = Controlador(UPDATE_TIME, root, colunas, tree,status_bar)
 
 # Pesquisa
 entrada = Pesquisa(
@@ -75,12 +75,11 @@ encerrar_btn.pack(side='left', padx=5)
 details_btn.pack(side='left', padx=5)
 prioridade_btn.pack(side='left', padx=5)
 afindiade_btn.pack(side='left', padx=5)
-
+status_bar.pack(fill='x', side='bottom')
 
 def tree_select(evento=None):
     controlador.salva_selecao()
     atualizar_estado_botoes()
-
 
 def atualizar_estado_botoes():
     estado = tk.NORMAL if controlador.processo_selecionado is not None else tk.DISABLED
