@@ -9,8 +9,8 @@ class Afinidade:
     def __init__(self, root: tk.Tk, controlador: Controlador):
         self.controlador = controlador
         self.root = root
-        self.vars_check = []
-        self.janela = None
+        self.vars_check:tuple[int,tk.IntVar] = []
+        self.janela:tk.Toplevel = None
 
     def aplicar_afinidade(self):
         nova_afinidade = [cpu for cpu,
@@ -42,7 +42,9 @@ class Afinidade:
 
         self.janela = tk.Toplevel(self.root)
         self.janela.title(f"Afinidade de CPU - PID {pid}")
+        self.janela.grab_set()
         self.vars_check = []
+
 
         tk.Label(self.janela, text="Selecione os núcleos que o processo pode usar:").pack(
             pady=5)
