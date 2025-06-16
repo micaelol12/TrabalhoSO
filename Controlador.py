@@ -161,5 +161,12 @@ class Controlador:
         p = psutil.Process(self.pid_selecionado)
         p.nice(nivel)
         
+    def get_afinidade(self):
+        p = psutil.Process(self.pid_selecionado)
+        return p.cpu_affinity()
+    
+    def set_afinidade(self,nova_afinidade):
+        p = psutil.Process(self.pid_selecionado)
+        p.cpu_affinity(nova_afinidade)
 
 

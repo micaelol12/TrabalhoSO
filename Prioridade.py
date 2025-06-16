@@ -48,10 +48,6 @@ class Prioridade:
         return "Desconhecido"
     
     def mudar_prioridade_dialog(self):
-        if self.controlador.pid_selecionado is None:
-            print("Nenhum processo selecionado.")
-            return
-
         if not self.pode_alterar_prioridade():
             return
 

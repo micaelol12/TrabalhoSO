@@ -5,6 +5,7 @@ from Controlador import Controlador
 from Column import Column
 from Pesquisa import Pesquisa
 from Prioridade import Prioridade
+from Afinidade import Afinidade
 
 # Variáveis
 APP_NAME = "Gerenciador de Processos"
@@ -39,6 +40,9 @@ entrada = Pesquisa(
 #Prioridade modal
 prioridade = Prioridade(root,controlador)
 
+#Afinidade modal
+afinidade = Afinidade(root,controlador)
+
 # Frame para tabela + scrollbar
 frame_tabela = tk.Frame(root)
 frame_tabela.pack(fill='both', expand=True)
@@ -63,9 +67,28 @@ scrollbar.pack(side='right', fill='y')
 frame_botoes = tk.Frame(root)
 frame_botoes.pack(pady=10)
 
-tk.Button(frame_botoes, text="Encerrar processo selecionado", command=controlador.encerrar_processo).pack(side='left', padx=5)
-tk.Button(frame_botoes, text="Mostrar detalhes", command=controlador.exibir_detalhes_processo_selecionado).pack(side='left', padx=5)
-tk.Button(frame_botoes, text="Mudar Prioridade", command=prioridade.mudar_prioridade_dialog).pack(side='left', padx=5)
+encerrar_btn = tk.Button(frame_botoes, text="Encerrar processo selecionado", command=controlador.encerrar_processo,state=tk.DISABLED)
+details_btn = tk.Button(frame_botoes, text="Mostrar detalhes", command=controlador.exibir_detalhes_processo_selecionado,state=tk.DISABLED)
+prioridade_btn =tk.Button(frame_botoes, text="Mudar Prioridade", command=prioridade.mudar_prioridade_dialog,state=tk.DISABLED)
+afindiade_btn = tk.Button(frame_botoes, text="Mudar Afinidade", command=afinidade.mudar_afinidade_dialog,state=tk.DISABLED)
+
+encerrar_btn.pack(side='left', padx=5)
+details_btn.pack(side='left', padx=5)
+prioridade_btn.pack(side='left', padx=5)
+afindiade_btn.pack(side='left', padx=5)
+
+
+def atualizar_estado_botoes(event=None):
+    pid_selecionado = controlador.pid_selecionado
+    
+    estado = tk.NORMAL if pid_selecionado is not None else tk.DISABLED
+
+    encerrar_btn.config(state=estado)
+    details_btn.config(state=estado)
+    prioridade_btn.config(state=estado)
+    afindiade_btn.config(state=estado)
+    
+tree.bind("<<TreeviewSelect>>", atualizar_estado_botoes)
 
 # Inicia atualização automática
 controlador.atualizar_processos()
