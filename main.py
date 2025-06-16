@@ -6,6 +6,7 @@ from Column import Column
 from Pesquisa import Pesquisa
 from Prioridade import Prioridade
 from Afinidade import Afinidade
+
 # Variáveis
 APP_NAME = "Gerenciador de Processos"
 WINDOW_SIZE = "700x400"
