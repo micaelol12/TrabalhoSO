@@ -22,7 +22,6 @@ colunas = [
 
 # Criação da janela principal
 root = tk.Tk()
-root.iconbitmap("images\gear.ico")
 root.title(APP_NAME)
 root.geometry(WINDOW_SIZE)
 frame_pesquisa = tk.Frame(root)
