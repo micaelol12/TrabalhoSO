@@ -34,10 +34,10 @@ class Afinidade:
             cpus_disponiveis = list(range(psutil.cpu_count()))
             afinidade_atual = self.controlador.get_afinidade()
         except psutil.NoSuchProcess:
-            print("Processo não encontrado.")
+            messagebox.showwarning("Aviso,Processo não encontrado.")
             return
         except psutil.AccessDenied:
-            print("Sem permissão para alterar afinidade.")
+            messagebox.showwarning("Aviso","Sem permissão para alterar afinidade.")
             return
 
         self.janela = tk.Toplevel(self.root)
