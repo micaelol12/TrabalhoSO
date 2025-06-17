@@ -12,7 +12,7 @@ O trabalho tem como objetivo simular o gerenciador de tarefas do windows, possib
 ## Instalar libs necessárias
 
 ```
-pip install psutil ttkbootstrap
+pip install psutil
 ```
 
 ## Executar
@@ -21,4 +21,10 @@ Para melhor experiência inicie o editor de texto como administrador
 
 ```
 python .\main.py
+```
+
+## Build
+
+```
+python -m PyInstaller main.py --windowed
 ```
