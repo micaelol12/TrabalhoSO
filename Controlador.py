@@ -157,19 +157,21 @@ class Controlador:
             messagebox.showwarning("Aviso", "Nenhum processo selecionado.")
 
     def exibir_detalhes_processo_selecionado(self):
-        if self.processo_selecionado:
+        try:
+            if self.processo_selecionado:
+                detalhes = f"Nome: {self.processo_selecionado.name()}\n"
+                detalhes += f"Caminho: {self.processo_selecionado.exe()}\n"
+                detalhes += f"Usuário: {self.processo_selecionado.username()}\n"
+                detalhes += f"Número de threads: {self.processo_selecionado.num_threads()}\n"
+                detalhes += f"Comando: {self.processo_selecionado.cmdline()}\n"
+                detalhes += f"Handles abertos: {self.processo_selecionado.num_handles()}\n"
+                detalhes += f"CPU: {self.processo_selecionado.cpu_percent()}%\n"
+                detalhes += f"Memória: {self.processo_selecionado.memory_info().rss / (1024 * 1024)} MB\n"
+                detalhes += f"Tempo de execução: {self.processo_selecionado.cpu_times().user} s"
+                messagebox.showinfo("Detalhes do Processo", detalhes)
+        except:
+            messagebox.showwarning("Aviso", "Sem pemissão para detalhes do processo")
 
-            detalhes = f"Nome: {self.processo_selecionado.name()}\n"
-            detalhes += f"Caminho: {self.processo_selecionado.exe()}\n"
-            detalhes += f"Usuário: {self.processo_selecionado.username()}\n"
-            detalhes += f"Número de threads: {self.processo_selecionado.num_threads()}\n"
-            detalhes += f"Comando: {self.processo_selecionado.cmdline()}\n"
-            detalhes += f"Handles abertos: {self.processo_selecionado.num_handles()}\n"
-            detalhes += f"CPU: {self.processo_selecionado.cpu_percent()}%\n"
-            detalhes += f"Memória: {self.processo_selecionado.memory_info().rss / (1024 * 1024)} MB\n"
-            detalhes += f"Tempo de execução: {self.processo_selecionado.cpu_times().user} s"
-
-            messagebox.showinfo("Detalhes do Processo", detalhes)
 
     def pesquisar(self, valor):
         self.pesquisa = valor
